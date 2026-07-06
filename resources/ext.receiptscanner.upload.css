@@ -1,0 +1,36 @@
+.rs-upload-kind {
+	border: 0;
+	margin: 0 0 .75em;
+	padding: 0;
+}
+
+.rs-upload-picker {
+	display: flex;
+	align-items: center;
+	gap: .75em;
+	margin-bottom: .75em;
+}
+
+/* The label IS the visible button; the real file input is hidden. */
+.mw-ui-button.rs-upload-pick {
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+}
+
+.rs-upload-input {
+	position: absolute;
+	left: -9999px;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.rs-upload-chosen {
+	color: var( --color-subtle, #54595d );
+	font-size: .95em;
+}
+
+.rs-upload-submit {
+	margin-top: .5em;
+}

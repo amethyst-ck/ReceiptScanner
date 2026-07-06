@@ -1,0 +1,86 @@
+/* File-thumbnail strip beside the file / supplemental_files pfTokens
+ * fields on Form:Expense / Form:Income. JS (bindTokensField in
+ * ext.receiptscanner.form.js) inserts these elements; the styles here
+ * just lay them out. */
+
+.rs-file-preview {
+	display: inline-flex;
+	align-items: center;
+	gap: .5em;
+}
+
+.rs-file-thumb {
+	border: 1px solid #c8ccd1;
+	border-radius: 2px;
+	background: #fff;
+}
+
+/* Fallback when the thumb image fails to load — JS swaps the <img>
+ * for a text node and adds .rs-file-card to the wrapping <a>. */
+.rs-file-card {
+	display: inline-flex;
+	align-items: center;
+	gap: .5em;
+	padding: .35em .6em;
+	border: 1px solid var( --border-color-base, #c8ccd1 );
+	border-radius: 2px;
+	background: var( --background-color-neutral-subtle, #f8f9fa );
+	color: var( --color-progressive, #36c );
+	text-decoration: none;
+}
+
+.rs-file-card:hover {
+	background: var( --background-color-neutral, #eaecf0 );
+}
+
+.rs-file-strip {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .5em;
+	margin-top: .5em;
+}
+
+.rs-file-strip .rs-file-preview {
+	flex: 0 0 auto;
+}
+
+.rs-file-strip .rs-file-thumb {
+	max-height: 150px;
+	max-width: 180px;
+}
+
+/* Main receipt thumb (single file) — bigger than the supplemental
+ * strip's chips so the parsed-from receipt is clearly the focal point.
+ * The min(400px, 100%) cap stops the thumb from overflowing the form
+ * column on phones narrower than 400px (an iPhone SE is 375px). */
+.rs-file-strip-main .rs-file-thumb {
+	max-height: none;
+	max-width: min( 400px, 100% );
+}
+
+/* Clone button emitted next to the file field by
+ * {{#receiptscanner_form_actions:}} (see ParserHooks). The
+ * mw-ui-button class supplies the standard button look. JS wraps the
+ * .rs-form-actions span + the main file strip in a .rs-file-row flex
+ * container so the button sits beside the receipt thumbnail rather
+ * than below it. */
+.rs-file-row {
+	display: flex;
+	align-items: flex-start;
+	gap: .75em;
+	margin-top: .5em;
+}
+
+.rs-file-row .rs-file-strip {
+	margin-top: 0;
+}
+
+/* Inline warning JS pops in when total ≠ subtotal + tax + fees. */
+.rs-total-warn {
+	margin-top: .35em;
+	padding: .35em .6em;
+	background: var( --background-color-warning-subtle, #fef6e7 );
+	border-left: 4px solid var( --border-color-warning, #fc3 );
+	color: var( --color-subtle, #54595d );
+	font-size: .9em;
+}

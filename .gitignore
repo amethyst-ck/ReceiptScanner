@@ -1,0 +1,30 @@
+# Virtual environments + test caches
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.pyo
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PII safeguard — locally-staged receipt fixtures are never committed
+# (the repo intentionally ships no fixture data).
+fixtures/
+
+# Local-only / never commit
+*.tmp
+*.bak
+
+# Sidecar build artifacts
+sidecars/receipt-scanner/dist/
+sidecars/receipt-scanner/build/
+*.egg-info/

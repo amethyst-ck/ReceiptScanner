@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap.php"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+	colors="true"
+	convertDeprecationsToExceptions="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	beStrictAboutTestsThatDoNotTestAnything="true"
+	verbose="false">
+	<!--
+		Two test suites:
+
+		  unit         extends MediaWikiUnitTestCase; runs via this
+		               extension-local bootstrap. Invoke with the PHPUnit
+		               testsuite option (two dashes, "testsuite unit"):
+		                 vendor/bin/phpunit -c .../phpunit.xml.dist [testsuite unit]
+
+		  integration  extends MediaWikiIntegrationTestCase; needs a real
+		               MediaWiki install + database, so run it with
+		               MediaWiki's standard runner rather than this config:
+		                 php tests/phpunit/phpunit.php extensions/ReceiptScanner/tests/phpunit/integration/
+		               (Formerly blocked by CanastaBase #167, fixed by #181.)
+
+		CI runs both; see .github/workflows/ci.yml.
+	-->
+	<testsuites>
+		<testsuite name="unit">
+			<directory>unit</directory>
+		</testsuite>
+		<testsuite name="integration">
+			<directory>integration</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>

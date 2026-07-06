@@ -1,0 +1,189 @@
+{
+	"name": "ReceiptScanner",
+	"version": "1.0.0",
+	"author": [ "Cindy Cicalese" ],
+	"url": "https://github.com/amethyst-ck/ReceiptScanner",
+	"descriptionmsg": "receiptscanner-desc",
+	"license-name": "GPL-2.0-or-later",
+	"type": "specialpage",
+	"requires": {
+		"MediaWiki": ">= 1.43.0",
+		"extensions": {
+			"PageForms": "*",
+			"Cargo": "*"
+		}
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\ReceiptScanner\\": "includes/"
+	},
+	"TestAutoloadNamespaces": {
+		"MediaWiki\\Extension\\ReceiptScanner\\Tests\\Unit\\": "tests/phpunit/unit/",
+		"MediaWiki\\Extension\\ReceiptScanner\\Tests\\Integration\\": "tests/phpunit/integration/"
+	},
+	"MessagesDirs": {
+		"ReceiptScanner": [
+			"i18n"
+		]
+	},
+	"ExtensionMessagesFiles": {
+		"ReceiptScannerAlias": "ReceiptScanner.alias.php",
+		"ReceiptScannerMagic": "ReceiptScanner.i18n.magic.php"
+	},
+	"SpecialPages": {
+		"UploadReceipt": {
+			"class": "MediaWiki\\Extension\\ReceiptScanner\\Special\\SpecialUploadReceipt",
+			"services": [
+				"ReceiptScanner.QueueStore",
+				"JobQueueGroup",
+				"RepoGroup"
+			]
+		},
+		"ReceiptReview": {
+			"class": "MediaWiki\\Extension\\ReceiptScanner\\Special\\SpecialReceiptReview",
+			"services": [
+				"ReceiptScanner.QueueStore",
+				"JobQueueGroup",
+				"TitleFactory"
+			]
+		},
+		"UnlinkedFiles": {
+			"class": "MediaWiki\\Extension\\ReceiptScanner\\Special\\SpecialUnlinkedFiles",
+			"services": [
+				"ReceiptScanner.UnlinkedFilesStore",
+				"RepoGroup",
+				"ReceiptScanner.QueueStore",
+				"JobQueueGroup",
+				"TitleFactory"
+			]
+		},
+		"Ledger": {
+			"class": "MediaWiki\\Extension\\ReceiptScanner\\Special\\SpecialLedger",
+			"services": [
+				"ReceiptScanner.LedgerStore",
+				"ReceiptScanner.BulkEditService",
+				"ReceiptScanner.CategoryVocabulary",
+				"ReceiptScanner.UserStore",
+				"TitleFactory",
+				"MainConfig"
+			]
+		},
+		"CloneReceiptEntry": {
+			"class": "MediaWiki\\Extension\\ReceiptScanner\\Special\\SpecialCloneReceiptEntry",
+			"services": [
+				"WikiPageFactory",
+				"TitleFactory"
+			]
+		}
+	},
+	"JobClasses": {
+		"ReceiptScanJob": {
+			"class": "MediaWiki\\Extension\\ReceiptScanner\\Jobs\\ReceiptScanJob",
+			"services": [
+				"ReceiptScanner.QueueStore",
+				"ReceiptScanner.SidecarClient",
+				"RepoGroup"
+			]
+		}
+	},
+	"Hooks": {
+		"LoadExtensionSchemaUpdates": "schema",
+		"BeforePageDisplay": "main",
+		"FileDeleteComplete": "main",
+		"PageDeleteComplete": "main",
+		"PageSaveComplete": "main",
+		"SidebarBeforeOutput": "main",
+		"ParserFirstCallInit": "parser",
+		"PageForms::WritePageData": "main"
+	},
+	"HookHandlers": {
+		"schema": {
+			"class": "MediaWiki\\Extension\\ReceiptScanner\\Hooks\\SchemaHooks"
+		},
+		"main": {
+			"class": "MediaWiki\\Extension\\ReceiptScanner\\Hooks\\MainHooks",
+			"services": [
+				"ReceiptScanner.QueueStore",
+				"ReceiptScanner.CategoryVocabulary",
+				"TitleFactory",
+				"WikiPageFactory",
+				"RevisionLookup"
+			]
+		},
+		"parser": {
+			"class": "MediaWiki\\Extension\\ReceiptScanner\\Hooks\\ParserHooks",
+			"services": [
+				"ReceiptScanner.CategoryVocabulary",
+				"ReceiptScanner.UserStore",
+				"MainConfig"
+			]
+		}
+	},
+	"callback": "MediaWiki\\Extension\\ReceiptScanner\\Hooks\\MainHooks::onRegistration",
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
+	"ResourceModules": {
+		"ext.receiptscanner.form": {
+			"scripts": [ "ext.receiptscanner.form.js" ],
+			"styles": [ "ext.receiptscanner.form.css" ],
+			"messages": [
+				"receiptscanner-form-total-mismatch"
+			],
+			"dependencies": [
+				"mediawiki.util"
+			]
+		},
+		"ext.receiptscanner.unlinked": {
+			"styles": [ "ext.receiptscanner.unlinked.css" ]
+		},
+		"ext.receiptscanner.ledger": {
+			"scripts": [ "ext.receiptscanner.ledger.js" ],
+			"styles": [ "ext.receiptscanner.ledger.css" ],
+			"messages": [
+				"receiptscanner-ledger-bulk-count"
+			]
+		},
+		"ext.receiptscanner.upload": {
+			"scripts": [ "ext.receiptscanner.upload.js" ],
+			"styles": [ "ext.receiptscanner.upload.css" ],
+			"messages": [
+				"receiptscanner-upload-files-selected"
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "resources",
+		"remoteExtPath": "ReceiptScanner/resources"
+	},
+	"config": {
+		"ReceiptScannerSidecarUrl": {
+			"description": "Base URL of the receipt-scanner sidecar.",
+			"value": "http://receipt-scanner:8000"
+		},
+		"ReceiptScannerSidecarTimeout": {
+			"description": "HTTP timeout in seconds for sidecar requests.",
+			"value": 15
+		},
+		"ReceiptScannerSidecarSecret": {
+			"description": "Shared HMAC secret. Empty disables HMAC (network boundary is the primary control).",
+			"value": ""
+		},
+		"ReceiptScannerSystemCurrency": {
+			"description": "ISO 4217 code of the wiki's accounting currency. Used as the default currency on new receipts and as the unit for all ledger summaries / totals. Receipts in other currencies must carry an exchange rate so they can be rolled up.",
+			"value": "USD"
+		},
+		"ReceiptScannerNamespaceIndex": {
+			"description": "Base index for the Expense and Income namespaces. Expense uses this index and +1 (talk); Income uses +2 and +3 (talk).",
+			"value": 3000
+		},
+		"ReceiptScannerExpenseCategoryPage": {
+			"description": "Wiki page defining the expense category vocabulary.",
+			"value": "Project:Expense categories"
+		},
+		"ReceiptScannerIncomeCategoryPage": {
+			"description": "Wiki page defining the income category vocabulary.",
+			"value": "Project:Income categories"
+		}
+	},
+	"manifest_version": 2
+}

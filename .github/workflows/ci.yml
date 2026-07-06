@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  php-unit:
+    name: PHP unit suite (MediaWiki 1.43)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer
+      - name: Clone MediaWiki REL1_43
+        run: git clone --depth 1 -b REL1_43 https://github.com/wikimedia/mediawiki.git mediawiki
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          path: src
+      - name: Place the extension into MediaWiki
+        run: cp -r src mediawiki/extensions/ReceiptScanner
+      - name: Install MediaWiki PHP dependencies
+        working-directory: mediawiki
+        run: composer install --no-interaction --no-progress
+      - name: Run unit suite
+        working-directory: mediawiki
+        run: >-
+          vendor/bin/phpunit
+          -c extensions/ReceiptScanner/tests/phpunit/phpunit.xml.dist
+          --testsuite unit
+
+  php-integration:
+    name: PHP integration suite (MediaWiki 1.43 + MariaDB)
+    runs-on: ubuntu-latest
+    # ReceiptScanner ships a MySQL/MariaDB schema (sql/tables.sql), and
+    # Canasta runs on MariaDB, so test against MariaDB rather than SQLite.
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: rootpass
+          MARIADB_DATABASE: wikidb
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    steps:
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, calendar, mysqli, pdo_mysql, xml, gd
+          tools: composer
+      - name: Clone MediaWiki REL1_43
+        run: git clone --depth 1 -b REL1_43 https://github.com/wikimedia/mediawiki.git mediawiki
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          path: src
+      - name: Place the extension into MediaWiki
+        run: cp -r src mediawiki/extensions/ReceiptScanner
+      # ReceiptScanner hard-requires PageForms and Cargo, so the installer
+      # needs them present even though the integration tests don't use them.
+      # Pinned to the RecommendedRevisions commits for MediaWiki 1.43
+      # (Cargo has no REL1_43 branch).
+      - name: Clone required extensions
+        working-directory: mediawiki/extensions
+        run: |
+          git clone https://github.com/wikimedia/mediawiki-extensions-Cargo.git Cargo
+          git -C Cargo checkout 2eeb4575748ee5be024038c69c740a7213d944a4
+          git clone https://github.com/wikimedia/mediawiki-extensions-PageForms.git PageForms
+          git -C PageForms checkout b3e62bd2e36387b5328457afccd3c00ce8f28cce
+      - name: Install MediaWiki PHP dependencies
+        working-directory: mediawiki
+        run: composer install --no-interaction --no-progress
+      - name: Install MediaWiki (MariaDB) with the extension enabled
+        working-directory: mediawiki
+        run: |
+          php maintenance/install.php \
+            --dbtype=mysql \
+            --dbserver=127.0.0.1 \
+            --dbname=wikidb \
+            --installdbuser=root --installdbpass=rootpass \
+            --dbuser=root --dbpass=rootpass \
+            --extensions=Cargo,PageForms,ReceiptScanner \
+            --pass=CIadminpassword123 ReceiptScannerCI Admin
+          php maintenance/update.php --quick
+      - name: Run integration suite
+        working-directory: mediawiki
+        run: php tests/phpunit/phpunit.php extensions/ReceiptScanner/tests/phpunit/integration/

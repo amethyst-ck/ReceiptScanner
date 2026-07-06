@@ -1,0 +1,365 @@
+form.rs-ledger-form {
+	background: var( --background-color-neutral-subtle, #f8f9fa );
+	border: 1px solid var( --border-color-subtle, #eaecf0 );
+	border-radius: 6px;
+	padding: 1em;
+	margin-bottom: 1em;
+}
+
+/* Horizontal-scroll wrapper for the results table + each rollup
+ * table. The results table has 8 columns and overflows a phone-sized
+ * viewport; without this the whole page would scroll instead of just
+ * the table. */
+.rs-ledger-scroll {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.rs-ledger-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1em;
+	align-items: flex-end;
+	margin-bottom: .5em;
+}
+
+.rs-ledger-row:last-child {
+	margin-bottom: 0;
+}
+
+.rs-ledger-row label {
+	display: flex;
+	flex-direction: column;
+	font-size: .9em;
+	color: var( --color-subtle, #54595d );
+}
+
+.rs-ledger-row label > select,
+.rs-ledger-row label > input {
+	margin-top: .25em;
+	padding: .25em .4em;
+}
+
+.rs-ledger-summary {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1em;
+	margin-bottom: .75em;
+	font-variant-numeric: tabular-nums;
+}
+
+table.rs-ledger-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: var( --background-color-base, #fff );
+	border: 1px solid var( --border-color-subtle, #eaecf0 );
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+table.rs-ledger-table th,
+table.rs-ledger-table td {
+	padding: .5em .8em;
+	border-bottom: 1px solid var( --border-color-subtle, #eaecf0 );
+	text-align: left;
+}
+
+table.rs-ledger-table tr:last-child td {
+	border-bottom: none;
+}
+
+table.rs-ledger-table th {
+	background: var( --background-color-neutral-subtle, #f8f9fa );
+	font-weight: 600;
+}
+
+table.rs-ledger-table td.rs-ledger-amount,
+table.rs-ledger-table th.rs-ledger-amount {
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+table.rs-ledger-table tr.rs-ledger-row-income td.rs-ledger-amount {
+	color: var( --color-content-added, #14866d );
+}
+
+table.rs-ledger-table tr.rs-ledger-row-expense td.rs-ledger-amount {
+	color: var( --color-content-removed, #b32424 );
+}
+
+table.rs-ledger-table th.rs-ledger-link-col,
+table.rs-ledger-table td.rs-ledger-link-col {
+	width: 2em;
+	text-align: center;
+	white-space: nowrap;
+}
+
+details.rs-ledger-rollup {
+	margin: 0 0 1em;
+}
+
+details.rs-ledger-rollup > summary {
+	font-weight: 600;
+	padding: .35em 0;
+	cursor: pointer;
+}
+
+table.rs-ledger-rollup-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: var( --background-color-base, #fff );
+	border: 1px solid var( --border-color-subtle, #eaecf0 );
+	border-radius: 6px;
+	overflow: hidden;
+	margin-top: .25em;
+}
+
+table.rs-ledger-rollup-table th,
+table.rs-ledger-rollup-table td {
+	padding: .4em .8em;
+	border-bottom: 1px solid var( --border-color-subtle, #eaecf0 );
+}
+
+table.rs-ledger-rollup-table tr:last-child td {
+	border-bottom: none;
+}
+
+table.rs-ledger-rollup-table th {
+	background: var( --background-color-neutral-subtle, #f8f9fa );
+	font-weight: 600;
+	text-align: left;
+}
+
+table.rs-ledger-rollup-table .rs-ledger-row-income {
+	color: var( --color-content-added, #14866d );
+}
+
+table.rs-ledger-rollup-table .rs-ledger-row-expense {
+	color: var( --color-content-removed, #b32424 );
+}
+
+/* Summary / Schedule-C view. */
+.rs-ledger-summary-toolbar {
+	display: flex;
+	gap: .5em;
+	margin-bottom: 1em;
+}
+
+.rs-ledger-summary-doc {
+	background: var( --background-color-base, #fff );
+	border: 1px solid var( --border-color-subtle, #eaecf0 );
+	border-radius: 6px;
+	padding: 1.5em 2em;
+	max-width: 720px;
+	box-shadow: 0 1px 3px rgba( 0, 0, 0, 0.06 );
+}
+
+.rs-ledger-summary-doc h2 {
+	margin-top: 0;
+	border-bottom: 2px solid var( --color-base, #202122 );
+	padding-bottom: .25em;
+}
+
+.rs-ledger-summary-doc h3 {
+	margin-top: 1.5em;
+	margin-bottom: .25em;
+	font-size: 1.15em;
+}
+
+.rs-ledger-summary-range {
+	color: var( --color-subtle, #54595d );
+	font-style: italic;
+	margin-top: 0;
+}
+
+table.rs-ledger-summary-group {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+table.rs-ledger-summary-group td {
+	padding: .35em .5em;
+	border-bottom: 1px solid var( --border-color-subtle, #eaecf0 );
+}
+
+table.rs-ledger-summary-group tr.rs-ledger-summary-total td {
+	font-weight: 600;
+	border-top: 2px solid var( --color-subtle, #54595d );
+	border-bottom: none;
+}
+
+table.rs-ledger-summary-net {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 1.5em;
+}
+
+table.rs-ledger-summary-net th,
+table.rs-ledger-summary-net td {
+	padding: .6em .5em;
+	border-top: 3px double var( --color-base, #202122 );
+	font-weight: 700;
+	font-size: 1.05em;
+}
+
+/* Bulk-edit selection column + form (hidden until something selected). */
+.rs-ledger-select-cell {
+	width: 1.5em;
+	text-align: center;
+}
+
+.rs-ledger-bulk-form {
+	display: none;
+	margin-top: 1em;
+	padding: .75em 1em;
+	background: var( --background-color-progressive-subtle, #eaf3ff );
+	border: 1px solid var( --color-progressive, #36c );
+	border-radius: 6px;
+}
+
+.rs-ledger-bulk-form--active {
+	display: block;
+}
+
+.rs-ledger-bulk-row {
+	display: flex;
+	align-items: center;
+	gap: .75em;
+	flex-wrap: wrap;
+}
+
+.rs-ledger-bulk-count {
+	font-weight: 600;
+	color: var( --color-progressive, #36c );
+}
+
+/* Local-list autocomplete dropdown (mirrors the form's file picker). */
+.rs-ac-wrap {
+	display: inline-block;
+	position: relative;
+}
+
+.rs-file-menu {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	min-width: 100%;
+	z-index: 1000;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	background: var( --background-color-base, #fff );
+	border: 1px solid var( --border-color-base, #c8ccd1 );
+	max-height: 240px;
+	overflow-y: auto;
+	box-shadow: 0 2px 6px rgba( 0, 0, 0, 0.12 );
+}
+
+.rs-file-menu > li {
+	padding: .3em .6em;
+	cursor: pointer;
+	font-size: .9em;
+}
+
+.rs-file-menu > li.rs-file-menu-active,
+.rs-file-menu > li:hover {
+	background: var( --background-color-progressive-subtle, #eaf3ff );
+}
+
+@media print {
+	.rs-ledger-summary-toolbar,
+	#mw-head,
+	#siteNotice,
+	#mw-panel,
+	#footer,
+	.vector-header-container,
+	.vector-page-toolbar,
+	.vector-column-start,
+	.mw-footer-container {
+		display: none !important;
+	}
+	.rs-ledger-summary-doc {
+		border: none;
+		box-shadow: none;
+		max-width: 100%;
+		padding: 0;
+	}
+}
+
+/* Narrow viewports: the results and rollup tables reflow into stacked
+ * cards — header row hidden, each cell prefixed with its column name
+ * from data-label. Empty cells collapse so blank categories/assignees
+ * leave no orphan labels; the checkbox and entry link pin to the
+ * card's top-right corner. */
+@media ( max-width: 720px ) {
+	table.rs-ledger-table thead,
+	table.rs-ledger-rollup-table thead {
+		display: none;
+	}
+
+	table.rs-ledger-table,
+	table.rs-ledger-table tbody,
+	table.rs-ledger-table tr,
+	table.rs-ledger-table td,
+	table.rs-ledger-rollup-table,
+	table.rs-ledger-rollup-table tbody,
+	table.rs-ledger-rollup-table tr,
+	table.rs-ledger-rollup-table td {
+		display: block;
+	}
+
+	table.rs-ledger-table tr,
+	table.rs-ledger-rollup-table tr {
+		position: relative;
+		padding: .6em .8em;
+		border-bottom: 1px solid var( --border-color-subtle, #eaecf0 );
+	}
+
+	table.rs-ledger-table td,
+	table.rs-ledger-rollup-table td {
+		padding: .1em 0;
+		border-bottom: none;
+	}
+
+	table.rs-ledger-table td:empty {
+		display: none;
+	}
+
+	table.rs-ledger-table td[data-label]::before,
+	table.rs-ledger-rollup-table td[data-label]::before {
+		content: attr( data-label );
+		display: inline-block;
+		width: 7em;
+		color: var( --color-subtle, #54595d );
+		font-size: .85em;
+	}
+
+	/* Amounts read as labelled values on cards, not aligned columns. */
+	table.rs-ledger-table td.rs-ledger-amount,
+	table.rs-ledger-rollup-table td.rs-ledger-amount {
+		text-align: left;
+	}
+
+	table.rs-ledger-table td.rs-ledger-select-cell {
+		position: absolute;
+		top: .7em;
+		right: .8em;
+		width: auto;
+		padding: 0;
+	}
+
+	table.rs-ledger-table td.rs-ledger-link-col {
+		position: absolute;
+		top: .7em;
+		right: 2.6em;
+		width: auto;
+		padding: 0;
+	}
+
+	/* The rollup key cell is the card title. */
+	table.rs-ledger-rollup-table td:first-child {
+		font-weight: 600;
+	}
+}

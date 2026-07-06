@@ -1,0 +1,39 @@
+table.rs-unlinked-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: var( --background-color-base, #fff );
+	border: 1px solid var( --border-color-subtle, #eaecf0 );
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+table.rs-unlinked-table td {
+	padding: .75em 1em;
+	border-bottom: 1px solid var( --border-color-subtle, #eaecf0 );
+	vertical-align: middle;
+}
+
+table.rs-unlinked-table tr:last-child td {
+	border-bottom: none;
+}
+
+table.rs-unlinked-table td.rs-unlinked-thumb-cell {
+	width: 140px;
+	text-align: center;
+}
+
+.rs-unlinked-name {
+	word-break: break-all;
+	margin-bottom: .5em;
+}
+
+.rs-unlinked-actions {
+	display: flex;
+	gap: .5em;
+	flex-wrap: wrap;
+}
+
+.rs-unlinked-process-form {
+	display: inline;
+	margin: 0;
+}
