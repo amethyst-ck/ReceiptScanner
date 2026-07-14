@@ -275,6 +275,11 @@ readonly class MainHooks implements
 
 	/** @inheritDoc */
 	public function onSidebarBeforeOutput( $skin, &$sidebar ): void {
+		// The tools all need a login (upload, review, ledger, form edits), so
+		// only show the section to logged-in users.
+		if ( !$skin->getUser()->isRegistered() ) {
+			return;
+		}
 		// A dedicated sidebar section: the skin renders it as its own
 		// group with the receiptscanner-sidebar-heading message as the
 		// heading, visually separated from the core menus.
